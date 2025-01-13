@@ -12,3 +12,4 @@ sqlite3-api>=0.1.0
 typing-extensions>=4.8.0
 uuid>=1.30
 python-dateutil>=2.8.2
+llama-index-llms-groq==0.3.1
