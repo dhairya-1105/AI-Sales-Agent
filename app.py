@@ -6,7 +6,6 @@ import numpy as np
 import time
 from sales_agent import SalesAgent
 import os
-import wave
 
 def initialize_session_state():
     if 'agent' not in st.session_state:
