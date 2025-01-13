@@ -64,7 +64,7 @@ Our vision is to create the *best open-source AI Sales Agent* that helps busines
 
 ---
 ## Chat Example
-```
+```diff
 *Niharika*: Hello, my name is Niharika, and I'm a Business Representative from Sleep Victory. I'm calling today to introduce our premium mattress company and see if we can help you achieve a better night's sleep. We specialize in providing high-quality sleep solutions that can improve overall health and well-being. Can I take a minute to discuss how our products might benefit you?
 
 *Tanish*: Hello Niharika, I am Tanish. I am really struggling with sleep issues lately; I guess now it's time for me to change the mattress.
