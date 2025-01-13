@@ -4,3 +4,4 @@ llama-index
 llama-index-llms-groq
 sentence-transformers
 SpeechRecognition
+faiss-cpu
