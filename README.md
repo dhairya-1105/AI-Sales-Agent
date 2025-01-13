@@ -64,6 +64,7 @@ Our vision is to create the *best open-source AI Sales Agent* that helps busines
 
 ---
 ## Chat Example
+```
 *Niharika*: Hello, my name is Niharika, and I'm a Business Representative from Sleep Victory. I'm calling today to introduce our premium mattress company and see if we can help you achieve a better night's sleep. We specialize in providing high-quality sleep solutions that can improve overall health and well-being. Can I take a minute to discuss how our products might benefit you?
 
 *Tanish*: Hello Niharika, I am Tanish. I am really struggling with sleep issues lately; I guess now it's time for me to change the mattress.
@@ -124,6 +125,7 @@ The *Classic Harmony Spring Mattress* offers great support and a comfortable sle
 
 *Niharika*: You're welcome, Tanish. It was a pleasure assisting you in finding a new mattress that should help with your back pain. If you have any other questions or need further assistance in the future, don't hesitate to reach out.  
 Have a great day, and I hope you enjoy your new mattress! Thanks so much for chatting with us, Tanish - we appreciate the time you took to talk with us.
+```
 
 ## Setup and Installation
 
