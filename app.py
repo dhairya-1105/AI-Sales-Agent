@@ -50,6 +50,11 @@ def record_audio():
         return "Sorry, there was an error with the speech recognition service."
 
 def play_text_as_speech(text):
+    import os
+    import requests
+    import streamlit as st
+    import tempfile
+    
     # Clean and chunk the text
     def clean_text(text):
         # Remove special characters and normalize whitespace
@@ -103,29 +108,26 @@ def play_text_as_speech(text):
             response = requests.post(url, json=payload, headers=headers)
             
             if response.status_code != 200:
-                print(f"Error with chunk: {chunk}")
-                print(f"Error response: {response.text}")
+                st.error(f"Error with chunk: {chunk}")
+                st.error(f"Error response: {response.text}")
                 continue
                 
             # Save and play the audio
-            with open('output_audio.wav', 'wb') as f:
-                f.write(response.content)
-            
-            # Play the audio
-            data, samplerate = sf.read('output_audio.wav')
-            sd.play(data, samplerate)
-            sd.wait()  # Wait until audio is finished playing
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
+                temp_file.write(response.content)
+                temp_filename = temp_file.name
+
+            # Streamlit's audio player
+            st.audio(temp_filename, format="audio/wav")
             
             # Clean up
-            os.remove('output_audio.wav')
+            os.remove(temp_filename)
             
         except Exception as e:
-            print(f"Error processing chunk: {chunk}")
-            print(f"Error: {str(e)}")
+            st.error(f"Error processing chunk: {chunk}")
+            st.error(f"Error: {str(e)}")
             continue
-            
-        # Small pause between chunks
-        time.sleep(0.1)
+
 
 
 def main():
