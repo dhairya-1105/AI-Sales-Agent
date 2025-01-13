@@ -11,4 +11,3 @@ typing-extensions
 uuid
 python-dateutil
 llama-index-llms-groq
-; sys_platform != "win32"
