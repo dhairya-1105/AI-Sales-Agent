@@ -63,6 +63,62 @@ Our vision is to create the *best open-source AI Sales Agent* that helps busines
    - Hosted on Streamlit for easy accessibility and intuitive interaction.
 
 ---
+## Chat Example
+```diff
++ *Niharika*: Hello, my name is Niharika, and I'm a Business Representative from Sleep Victory. I'm calling today to introduce our premium mattress company and see if we can help you achieve a better night's sleep. We specialize in providing high-quality sleep solutions that can improve overall health and well-being. Can I take a minute to discuss how our products might benefit you?  
+- *User*: Hello Niharika, I am Tanish. I am really struggling with sleep issues lately; I guess now it's time for me to change the mattress.  
+
+---
+
++ *Niharika*: I'm so glad you're considering a new mattress, Tanish. What kind of mattress are you currently using, and what specific issues are you experiencing with your sleep?  
+- *User*: I have back pain; doctors have suggested me to use firm pillows under my waist.  
+
+---
+
++ *Niharika*: It sounds like you're experiencing some discomfort and back pain, and your doctor has recommended using firm pillows for support. Have you considered a mattress with extra lumbar support or a firmer mattress to help alleviate your back pain?  
+- *User*: Yeah, maybe, that sounds promising. Can you suggest some?  
+
+*Tool Called*: Search Catalog  
+*Tool Input*: Mattresses with extra lumbar support  
+*Tool Output*:  
+- *Option 1: Orthopedic Supreme Gel Memory Mattress - Provides precise pressure relief for joints and the spine. Designed for those with orthopedic needs. Priced at *$1,799**.  
+
++ *Niharika: I'd recommend the Orthopedic Supreme Gel Memory Mattress, which provides precise pressure relief for joints and the spine. This mattress is designed for those with specific orthopedic needs and offers optimal firmness for posture correction. It's priced at *$1,799**.  
+
+- *User*: Are there any cheaper options available, because currently, I am short on cash?  
+
+---
+
+*Tool Called*: Search Catalog  
+*Tool Input*: Affordable mattresses with lumbar support  
+*Tool Output*:  
+- *Option 1: Classic Harmony Spring Mattress - Offers great support and a comfortable sleeping surface. It's firmer than some other options and priced at *$1,299**.  
+
++ *Niharika*: I completely understand that budget can be a concern, Tanish. Let me see if I can find some more affordable options for you with similar features.  
+- *Option: The Classic Harmony Spring Mattress offers great support and a comfortable sleeping surface. It's a bit firmer and has a price tag of *$1,299**, which is under your budget. This might be a good fit for you since it provides the lumbar support you're looking for.  
+
+- *User*: Yeah, that's under my budget.  
+
+---
+
++ *Niharika*: I'm glad the Classic Harmony Spring Mattress fits within your budget, Tanish. Would you like to proceed with purchasing this mattress, or would you like me to explore more options for you?  
+- *User*: I think this will be a good fit for me, Niharika.  
+
+---
+
+*Tool Called*: Create Order  
+*Tool Input*: Classic Harmony Spring Mattress  
+*Tool Output*:  
+- *Order ID*: 9d9b52b5-78be-44f2-b407-9b3fe4895cad  
+
++ *Niharika*: I'm so glad you've found a mattress that you think will be a good fit for you, Tanish. To proceed with the purchase, I just need to confirm your name, which you've already provided.  
+
+---
+
+- *User*: Thanks, Niharika.  
++ *Niharika*: You're welcome, Tanish. It was a pleasure assisting you in finding a new mattress that should help with your back pain. If you have any other questions or need further assistance in the future, don't hesitate to reach out.  
+
++ *Niharika*: Have a great day, and I hope you enjoy your new mattress! Thanks so much for chatting with us, Tanish - we appreciate the time you took to talk with us.
 
 ## Setup and Installation
 
