@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import speech_recognition as sr
+from audio_recorder_streamlit import audio_recorder
 import tempfile
 import os
 import time
@@ -99,7 +100,7 @@ def main():
                 st.write(message["content"])
         
         # Audio recording using Streamlit's native audio recorder
-        audio_bytes = st.audio_recorder(
+        audio_bytes = audio_recorder(
             text="Click to record your message",
             recording_color="#e87373",
             neutral_color="#6aa36f"
