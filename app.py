@@ -2,8 +2,6 @@ import streamlit as st
 import speech_recognition as sr
 import requests
 import tempfile
-import sounddevice as sd
-import soundfile as sf
 import numpy as np
 import time
 from sales_agent import SalesAgent
