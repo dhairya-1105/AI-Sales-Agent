@@ -5,3 +5,4 @@ llama-index-llms-groq
 sentence-transformers
 SpeechRecognition
 faiss-cpu
+llama-index-embeddings-jinaai
