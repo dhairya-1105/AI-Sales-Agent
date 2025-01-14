@@ -139,10 +139,20 @@ you enjoy your new mattress! Thanks so much for chatting with us, Tanish - we ap
 
 ## Setup and Installation
 
-### Prerequisites
-- Python 3.8+
-- API Keys:
-  - Groq API for LLMs
-  - Smallest AI API for text-to-speech
-  - Jina Embeddings API for retrieval
-- Libraries: Install the required dependencies using the requirements.txt.
+### 1. Clone the Repository
+```bash
+git clone <your-repo-url>
+cd <your-repo-folder>
+```
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+### 3. Setup API Keys
+Replace the API keys in the code with your own API keys. This includes Groq, Jina Embeddings, and Smallest.ai
+### 4. Prepare Vector Database
+Run the create_catalog.py file to generate a vector database of the sample catalog using Jina Embeddings
+### 5. Launch the app
+```bash
+python app.py
+```
