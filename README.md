@@ -12,9 +12,9 @@ Our vision is to create a *capable open-source AI Sales Agent* that helps busine
   Our agent understands and adjusts its responses based on the stage of the sales conversation, such as introduction, needs analysis, solution presentation, objection handling, and closing.
 
 - *Tool Integration*:
-  - *Search Product Tool*: A RAG (Retrieval-Augmented Generation) system that fetches relevant product information based on user queries.
-  - *Create Order Tool*: Captures order details, saves them in an SQLite database, and generates a unique order ID.
-  - *End Tool*: Provides a friendly farewell message and gracefully ends the conversation.
+  - **Search Product Tool**: A RAG (Retrieval-Augmented Generation) system that fetches relevant product information based on user queries.
+  - **Create Order Tool**: Captures order details, saves them in an SQLite database, and generates a unique order ID.
+  - **End Tool**: Provides a friendly farewell message and gracefully ends the conversation.
 
 - *Voice & Text Integration*:
   - Voice input using speech_recognition.
