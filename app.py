@@ -140,7 +140,7 @@ def process_audio(audio_bytes):
             r.adjust_for_ambient_noise(source, duration=0.5)
             audio = r.record(source)
             
-        text = r.recognize_google(audio, language='en-US')
+        text = r.recognize_google(audio, language='en-IN')
         os.unlink(temp_audio_path)
         return text
     except sr.UnknownValueError:
