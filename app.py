@@ -114,7 +114,7 @@ def synthesize_speech(text):
             
             combined_audio = combine_wav_files(wav_contents)
             if(combined_audio):
-                st.audio(combined_audio, format='audio/wav')
+                st.audio(combined_audio, format='audio/wav', autoplay=True)
                 st.session_state.audio_response_played = True
             
         except Exception as e:
