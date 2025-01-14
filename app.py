@@ -6,6 +6,8 @@ import numpy as np
 import time
 from sales_agent import SalesAgent
 import os
+from audio_recorder_streamlit import audio_recorder
+import io
 
 def initialize_session_state():
     if 'agent' not in st.session_state:
@@ -16,30 +18,29 @@ def initialize_session_state():
         st.session_state.conversation_history = []
     if 'messages' not in st.session_state:
         st.session_state.messages = []
-    if 'recording' not in st.session_state:
-        st.session_state.recording = False
-    if 'audio_data' not in st.session_state:
-        st.session_state.audio_data = None
 
 def start_conversation():
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
     welcome_message = "Hello, my name is Mithali. I'm calling from Sleep Haven Products. Would you be interested in exploring our mattress options?"
     st.session_state.messages.append({"role": "assistant", "content": welcome_message})
-    # Convert welcome message to speech
     play_text_as_speech(welcome_message)
 
-def record_audio():
+def convert_audio_to_text(audio_bytes):
     # Initialize recognizer
     r = sr.Recognizer()
     
-    with sr.Microphone() as source:
-        st.write("Listening... Click 'Stop Recording' when done speaking.")
-        audio = r.listen(source)
+    # Convert audio bytes to AudioFile
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=True) as temp_audio:
+        temp_audio.write(audio_bytes)
+        temp_audio.flush()
         
+        with sr.AudioFile(temp_audio.name) as source:
+            audio_data = r.record(source)
+            
     try:
         # Convert speech to text
-        text = r.recognize_google(audio)
+        text = r.recognize_google(audio_data)
         return text
     except sr.UnknownValueError:
         return "Sorry, I couldn't understand the audio."
@@ -49,11 +50,10 @@ def record_audio():
 def play_text_as_speech(text):
     # Clean and chunk the text
     def clean_text(text):
-        # Remove special characters and normalize whitespace
         text = text.replace('*', ' ').replace('−', '-')
         return ' '.join(text.split())
     
-    def chunk_text(text, max_length=200):  # Adjust max_length if needed
+    def chunk_text(text, max_length=200):
         words = text.split()
         chunks = []
         current_chunk = []
@@ -80,13 +80,9 @@ def play_text_as_speech(text):
         "Content-Type": "application/json"
     }
     
-    # Clean the text
     cleaned_text = clean_text(text)
-    
-    # Split into chunks
     chunks = chunk_text(cleaned_text)
     
-    # Process each chunk
     for chunk in chunks:
         try:
             payload = {
@@ -103,10 +99,15 @@ def play_text_as_speech(text):
                 print(f"Error with chunk: {chunk}")
                 print(f"Error response: {response.text}")
                 continue
-                
-            # Play the audio using Streamlit's audio player
-            st.audio(response.content, format='audio/wav')
-            time.sleep(0.1)  # Small pause between chunks
+            
+            # Create a BytesIO object to hold the audio data
+            audio_data = io.BytesIO(response.content)
+            
+            # Play the audio using st.audio
+            st.audio(audio_data, format="audio/wav")
+            
+            # Small pause between chunks
+            time.sleep(0.1)
             
         except Exception as e:
             print(f"Error processing chunk: {chunk}")
@@ -130,42 +131,47 @@ def main():
             with st.chat_message(message["role"]):
                 st.write(message["content"])
         
-        # Audio recording controls
-        col1, col2 = st.columns(2)
+        # Audio recording using audio_recorder_streamlit
+        audio_bytes = audio_recorder(
+            text="Click to record",
+            recording_color="#e8b62c",
+            neutral_color="#6aa36f",
+            icon_name="user",
+            icon_size="6x",
+            pause_threshold=2.0,
+            sample_rate=41_000
+        )
         
-        with col1:
-            if st.button("Start Recording"):
-                st.session_state.recording = True
-                text = record_audio()
+        if audio_bytes:
+            # Convert audio to text
+            text = convert_audio_to_text(audio_bytes)
+            
+            if text and text != "Sorry, I couldn't understand the audio." and text != "Sorry, there was an error with the speech recognition service.":
+                # Add user message to chat history
+                st.session_state.messages.append({"role": "user", "content": text})
                 
-                if text and text != "Sorry, I couldn't understand the audio." and text != "Sorry, there was an error with the speech recognition service.":
-                    # Add user message to chat history
-                    st.session_state.messages.append({"role": "user", "content": text})
-                    
-                    with st.chat_message("user"): 
-                        st.write(text)
-                    
-                    with st.chat_message("assistant"):
-                        message_placeholder = st.empty()
-                        response = st.session_state.agent.generate_response(
-                            text,
-                            [f"{msg['role']}: {msg['content']}" for msg in st.session_state.messages[:-1]]
-                        )
-                        message_placeholder.write(response)
-                        play_text_as_speech(response)
-                    
-                    # Add assistant response to chat history
-                    st.session_state.messages.append({"role": "assistant", "content": response})
-                    
-                    # Check if conversation should end
-                    if not st.session_state.agent.conversation_active:
-                        time.sleep(2)
-                        st.session_state.conversation_started = False
-                else:
-                    st.error(text)
+                with st.chat_message("user"): 
+                    st.write(text)
                 
-                st.session_state.recording = False
-                st.rerun()
+                with st.chat_message("assistant"):
+                    message_placeholder = st.empty()
+                    response = st.session_state.agent.generate_response(
+                        text,
+                        [f"{msg['role']}: {msg['content']}" for msg in st.session_state.messages[:-1]]
+                    )
+                    message_placeholder.write(response)
+                    play_text_as_speech(response)
+                
+                # Add assistant response to chat history
+                st.session_state.messages.append({"role": "assistant", "content": response})
+                
+                # Check if conversation should end
+                if not st.session_state.agent.conversation_active:
+                    time.sleep(2)
+                    st.session_state.conversation_started = False
+                    st.rerun()
+            else:
+                st.error(text)
 
 if __name__ == "__main__":
     main()
