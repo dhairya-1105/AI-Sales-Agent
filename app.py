@@ -21,6 +21,8 @@ def initialize_session_state():
         st.session_state.messages = []
     if 'audio_response_played' not in st.session_state:
         st.session_state.audio_response_played = False
+    if 'flag' not in st.session_state:
+        st.session_state.flag = 0
 
 def chunk_text(text, max_length=200):
     """Split text into chunks of maximum length while preserving word boundaries."""
@@ -170,18 +172,33 @@ def main():
                 st.write(message["content"])
 
         # Create a container for the audio recorder
-        audio_container = st.container()
+        if(st.session_state.flag==1):
+            audio_container = st.container()
         
-        with audio_container:
-            st.write("Record your response below:")
-            audio_bytes = audio_recorder(
-                pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
-                # auto_start=True,
-                sample_rate=16000,
-                recording_color="#e74c3c",  # Red color to make it clear when recording
-                neutral_color="#2ecc71",    # Green color when not recording
-                icon_size="2x"              # Larger icon for better visibility
-            )
+            with audio_container:
+                st.write("Record your response below:")
+                audio_bytes = audio_recorder(
+                    pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
+                    auto_start=True,
+                    sample_rate=16000,
+                    recording_color="#e74c3c",  # Red color to make it clear when recording
+                    neutral_color="#2ecc71",    # Green color when not recording
+                    icon_size="2x"              # Larger icon for better visibility
+                )
+        else:
+            audio_container = st.container()
+        
+            with audio_container:
+                st.write("Record your response below:")
+                audio_bytes = audio_recorder(
+                    pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
+                    # auto_start=True,
+                    sample_rate=16000,
+                    recording_color="#e74c3c",  # Red color to make it clear when recording
+                    neutral_color="#2ecc71",    # Green color when not recording
+                    icon_size="2x"              # Larger icon for better visibility
+                )
+
 
         # Reset audio_response_played when new recording starts
         if audio_bytes:
@@ -215,6 +232,7 @@ def main():
                     st.session_state.conversation_started = False
             else:
                 st.error(text)
+                st.session_state.flag = 1
 
 if __name__ == "__main__":
     main()
