@@ -174,6 +174,7 @@ def main():
         # Create a container for the audio recorder
         if(st.session_state.flag==1):
             audio_container = st.container()
+            st.write("aa agyaya maza")
         
             with audio_container:
                 st.write("Record your response below:")
@@ -201,8 +202,14 @@ def main():
 
 
         # Reset audio_response_played when new recording starts
-        if audio_bytes:
+        if audio_bytes and len(audio_bytes) > 0:
             st.session_state.audio_response_played = False
+        else:
+            st.session_state.flag = 1
+            if __name__ == "__main__":
+                main()
+            
+            
             
         # Handle recorded audio
         if audio_bytes:
@@ -232,7 +239,6 @@ def main():
                     st.session_state.conversation_started = False
             else:
                 st.error(text)
-                st.session_state.flag = 1
 
 if __name__ == "__main__":
     main()
