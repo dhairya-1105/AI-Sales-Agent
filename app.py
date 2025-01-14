@@ -49,12 +49,33 @@ def synthesize_speech(text):
         }
         
         try:
+            # Add debug information
+            st.write("Sending request to Waves API...")
             response = requests.post(url, json=payload, headers=headers)
+            st.write(f"Response status code: {response.status_code}")
+            
             if response.status_code == 200:
-                st.audio(response.content, format='audio/wav')
-                st.session_state.audio_response_played = True
+                # Check if we received audio content
+                content_type = response.headers.get('Content-Type', '')
+                content_length = len(response.content)
+                st.write(f"Received response - Content-Type: {content_type}, Length: {content_length} bytes")
+                
+                if content_length > 0:
+                    st.audio(response.content, format='audio/wav')
+                    st.session_state.audio_response_played = True
+                    st.write("Audio player created")
+                else:
+                    st.error("Received empty audio content from API")
+            else:
+                st.error(f"API call failed with status code {response.status_code}")
+                st.write("Error response:", response.text)
+                
         except Exception as e:
             st.error(f"Error synthesizing speech: {str(e)}")
+            # Print the full error traceback for debugging
+            import traceback
+            st.write("Full error traceback:")
+            st.code(traceback.format_exc())
 
 def process_audio(audio_bytes):
     if audio_bytes is None:
