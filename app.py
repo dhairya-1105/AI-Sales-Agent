@@ -129,6 +129,7 @@ def process_audio(audio_bytes):
         temp_audio_path = temp_audio.name
     
     try:
+        print("try me aagya")
         r = sr.Recognizer()
         # Adjust recognition parameters
         r.energy_threshold = 300  # Lower energy threshold for quieter speech
@@ -139,7 +140,6 @@ def process_audio(audio_bytes):
             # Adjust ambient noise for better recognition
             r.adjust_for_ambient_noise(source, duration=0.5)
             audio = r.record(source)
-            print("Audio record hogya")
             
         text = r.recognize_google(audio, language='en-IN')
         os.unlink(temp_audio_path)
