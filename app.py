@@ -61,7 +61,7 @@ def synthesize_speech(text):
         text = ' '.join(text.replace('*', ' ').replace('−', '-').split())
         
         # Split text into chunks
-        chunks = chunk_text(text, max_length=200)
+        chunks = chunk_text(text, max_length=500)
         
         url = "https://waves-api.smallest.ai/api/v1/lightning/get_speech"
         headers = {
