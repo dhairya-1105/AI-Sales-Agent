@@ -127,9 +127,9 @@ def process_audio(audio_bytes):
     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio:
         temp_audio.write(audio_bytes)
         temp_audio_path = temp_audio.name
+        print("temp file ban gyi")
     
     try:
-        print("try me aagya")
         r = sr.Recognizer()
         # Adjust recognition parameters
         r.energy_threshold = 300  # Lower energy threshold for quieter speech
