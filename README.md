@@ -1,14 +1,7 @@
-# SalesGPT: AI-Powered Context-Aware Sales Calling Agent
+# AI Sales Agent
 
-SalesGPT is an innovative, context-aware AI sales agent designed to streamline customer interactions across multiple channels, including voice, email, SMS, and messaging platforms (WhatsApp, Telegram, WeChat, etc.). 
-
-The agent intelligently adapts to different stages of a sales conversation and uses powerful tools, such as a product catalog for recommendations and an order creation system, to enhance the sales process. With integration into voice and web platforms, SalesGPT offers a seamless experience for customers and sales teams alike.
-
----
-
-## 🌟 Vision
-
-Our vision is to create the *best open-source AI Sales Agent* that helps businesses improve sales processes, enhance customer experiences, and minimize operational costs. We welcome collaboration and ideas for improving SalesGPT. Feel free to reach out to us to share your use cases or feedback!
+Our AI Sales Agent is an innovative, context-aware agent designed to streamline customer interactions across text and voice channels.
+Our vision is to create a *capable open-source AI Sales Agent* that helps businesses improve sales processes, enhance customer experiences, and minimize operational costs. Feel free to reach out to us to share your use cases or feedback!
 
 ---
 
@@ -16,7 +9,7 @@ Our vision is to create the *best open-source AI Sales Agent* that helps busines
 
 ### 🚀 Key Capabilities
 - *Context-Aware Conversations*: 
-  SalesGPT understands and adjusts its responses based on the stage of the sales conversation, such as introduction, qualification, needs analysis, solution presentation, objection handling, and closing.
+  Our agent understands and adjusts its responses based on the stage of the sales conversation, such as introduction, needs analysis, solution presentation, objection handling, and closing.
 
 - *Tool Integration*:
   - *Search Product Tool*: A RAG (Retrieval-Augmented Generation) system that fetches relevant product information based on user queries.
@@ -26,10 +19,7 @@ Our vision is to create the *best open-source AI Sales Agent* that helps busines
 - *Voice & Text Integration*:
   - Voice input using speech_recognition.
   - Text-to-speech output using the Smallest AI API.
-  - Hosted as a web application via Streamlit.
-
-- *Multi-Channel Support*:
-  Works across voice calls, email, and messaging platforms such as SMS, WhatsApp, Telegram, and more.
+  - Hosted as a web application via Streamlit Cloud.
 
 - *Automated Sales Support*:
   Capable of handling real-time customer queries, providing tailored recommendations, and closing sales autonomously.
@@ -42,14 +32,14 @@ Our vision is to create the *best open-source AI Sales Agent* that helps busines
   Manages customer orders, stores product information, and generates order confirmations with unique IDs.
 
 - *Rapid Pipeline Response*:
-  Optimized for voice conversations with a <1s response time for speech-to-text, LLM inference, and text-to-speech.
+  Optimized for voice conversations with a <2s response time for speech-to-text, LLM inference, and text-to-speech.
 
 ---
 
 ## Architecture
 
 1. *AI Engine*:
-   - Built using LlamaIndex's Groq LLM, offering contextual and conversational intelligence.
+   - Built using LlamaIndex's Groq LLM, specifically llama-3.3-70b-versatile, the agent contextual and conversational intelligence.
    - Supports synchronous and asynchronous operations with low latency.
 
 2. *Product Catalog Retrieval*:
@@ -61,6 +51,8 @@ Our vision is to create the *best open-source AI Sales Agent* that helps busines
 
 4. *Web Interface*:
    - Hosted on Streamlit for easy accessibility and intuitive interaction.
+  
+Access our Streamlit Cloud demo [here](https://ai-sales-agent-644hxadbndzatju8g27dbz.streamlit.app/)
 
 ---
 ## Chat Example
