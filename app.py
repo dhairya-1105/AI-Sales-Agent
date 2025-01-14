@@ -112,7 +112,7 @@ def main():
         with audio_container:
             st.write("Record your response below:")
             audio_bytes = audio_recorder(
-                pause_threshold=2.0,  # Increased pause threshold
+                pause_threshold=0.5,  # Increased pause threshold
                 sample_rate=16000
             )
 
