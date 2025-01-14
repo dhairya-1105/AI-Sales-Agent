@@ -1,4 +1,4 @@
-# AI Sales Agent
+# ⭐AI Sales Agent
 
 Our AI Sales Agent is an innovative, context-aware agent designed to streamline customer interactions across text and voice channels.
 Our vision is to create a *capable open-source AI Sales Agent* that helps businesses improve sales processes, enhance customer experiences, and minimize operational costs. Feel free to reach out to us to share your use cases or feedback!
