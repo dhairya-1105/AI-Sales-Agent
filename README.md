@@ -141,8 +141,8 @@ you enjoy your new mattress! Thanks so much for chatting with us, Tanish - we ap
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repo-url>
-cd <your-repo-folder>
+git clone https://github.com/dhairya-1105/AI-Sales-Agent
+cd AI-Sales-Agent
 ```
 ### 2. Install Dependencies
 ```bash
