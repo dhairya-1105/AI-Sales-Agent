@@ -173,7 +173,7 @@ def main():
 
         # Create a container for the audio recorder
         if(st.session_state.flag==1):
-            audio_container = st.container()
+            # audio_container = st.container()
             st.write("aa agyaya maza")
         
             with audio_container:
