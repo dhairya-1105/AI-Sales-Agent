@@ -21,7 +21,7 @@ def initialize_session_state():
     if 'audio_response_played' not in st.session_state:
         st.session_state.audio_response_played = False
 
-def chunk_text(text, max_length=200):
+def chunk_text(text, max_length=500):
     """Split text into chunks of maximum length while preserving word boundaries."""
     words = text.split()
     chunks = []
