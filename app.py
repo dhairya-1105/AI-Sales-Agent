@@ -155,6 +155,18 @@ def process_audio(audio_bytes):
 
 def main():
     st.title("AI Sales Assistant")
+    audio_container = st.container()
+        
+        with audio_container:
+            st.write("Record your response below:")
+            audio_bytes = audio_recorder(
+                pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
+                # auto_start=True,
+                sample_rate=16000,
+                recording_color="#e74c3c",  # Red color to make it clear when recording
+                neutral_color="#2ecc71",    # Green color when not recording
+                icon_size="2x"              # Larger icon for better visibility
+            )
     initialize_session_state()
 
     # Start button for conversation
@@ -170,18 +182,7 @@ def main():
                 st.write(message["content"])
 
         # Create a container for the audio recorder
-        audio_container = st.container()
         
-        with audio_container:
-            st.write("Record your response below:")
-            audio_bytes = audio_recorder(
-                pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
-                # auto_start=True,
-                sample_rate=16000,
-                recording_color="#e74c3c",  # Red color to make it clear when recording
-                neutral_color="#2ecc71",    # Green color when not recording
-                icon_size="2x"              # Larger icon for better visibility
-            )
 
         # Reset audio_response_played when new recording starts
         if audio_bytes:
