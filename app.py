@@ -18,39 +18,43 @@ def initialize_session_state():
         st.session_state.conversation_history = []
     if 'messages' not in st.session_state:
         st.session_state.messages = []
+    if 'audio_response_played' not in st.session_state:
+        st.session_state.audio_response_played = False
 
 def start_conversation():
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
     welcome_message = "Hello, my name is Mithali. I'm calling from Sleep Haven Products. Would you be interested in exploring our mattress options?"
     st.session_state.messages.append({"role": "assistant", "content": welcome_message})
-    synthesize_speech(welcome_message)
+    st.session_state.audio_response_played = False
 
 def synthesize_speech(text):
-    # Clean the text
-    text = ' '.join(text.replace('*', ' ').replace('−', '-').split())
-    
-    url = "https://waves-api.smallest.ai/api/v1/lightning/get_speech"
-    headers = {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzc5MDI4MGM0NDE1ODdhYjZlODEwM2UiLCJ0eXBlIjoiYXBpS2V5IiwiaWF0IjoxNzM1OTgzNzQ0LCJleHAiOjQ4OTE3NDM3NDR9._Rhof8jciBrL8FBN1rR8-qX8GJOlrKcg9fbMnJxRbXc",
-        "Content-Type": "application/json"
-    }
-    
-    payload = {
-        "text": text,
-        "voice_id": "mithali",
-        "add_wav_header": True,
-        "sample_rate": 16000,
-        "speed": 1
-    }
-    
-    try:
-        response = requests.post(url, json=payload, headers=headers)
-        if response.status_code == 200:
-            # Display audio in Streamlit
-            st.audio(response.content, format='audio/wav')
-    except Exception as e:
-        st.error(f"Error synthesizing speech: {str(e)}")
+    # Only synthesize if not already played
+    if not st.session_state.audio_response_played:
+        # Clean the text
+        text = ' '.join(text.replace('*', ' ').replace('−', '-').split())
+        
+        url = "https://waves-api.smallest.ai/api/v1/lightning/get_speech"
+        headers = {
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzc5MDI4MGM0NDE1ODdhYjZlODEwM2UiLCJ0eXBlIjoiYXBpS2V5IiwiaWF0IjoxNzM1OTgzNzQ0LCJleHAiOjQ4OTE3NDM3NDR9._Rhof8jciBrL8FBN1rR8-qX8GJOlrKcg9fbMnJxRbXc",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "text": text,
+            "voice_id": "mithali",
+            "add_wav_header": True,
+            "sample_rate": 16000,
+            "speed": 1
+        }
+        
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            if response.status_code == 200:
+                st.audio(response.content, format='audio/wav')
+                st.session_state.audio_response_played = True
+        except Exception as e:
+            st.error(f"Error synthesizing speech: {str(e)}")
 
 def process_audio(audio_bytes):
     if audio_bytes is None:
@@ -102,10 +106,20 @@ def main():
             with st.chat_message(message["role"]):
                 st.write(message["content"])
 
-        # Ensure audio recorder is always rendered
-        st.write("Record your response below:")
-        audio_bytes = audio_recorder()
+        # Create a container for the audio recorder
+        audio_container = st.container()
+        
+        with audio_container:
+            st.write("Record your response below:")
+            audio_bytes = audio_recorder(
+                pause_threshold=2.0,  # Increased pause threshold
+                sample_rate=16000
+            )
 
+        # Reset audio_response_played when new recording starts
+        if audio_bytes:
+            st.session_state.audio_response_played = False
+            
         # Handle recorded audio
         if audio_bytes:
             text = process_audio(audio_bytes)
@@ -134,9 +148,6 @@ def main():
                     st.session_state.conversation_started = False
             else:
                 st.error(text)
-
-        # Add a small delay to prevent unnecessary reruns
-        time.sleep(0.1)
 
 if __name__ == "__main__":
     main()
