@@ -163,6 +163,7 @@ def process_audio(audio_bytes):
 def main():
     st.title("AI Sales Assistant")
     initialize_session_state()
+    audio_container = st.container()
 
     # Start button for conversation
     if not st.session_state.conversation_started:
@@ -177,9 +178,7 @@ def main():
             with st.chat_message(message["role"]):
                 st.write(message["content"])
 
-        # Create a container for the audio recorder
-        audio_container = st.container()
-        
+        # Create a container for the audio recorder        
         with audio_container:
             st.write("Record your response below:")
             audio_bytes = audio_recorder(
