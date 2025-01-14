@@ -21,6 +21,31 @@ def initialize_session_state():
     if 'audio_response_played' not in st.session_state:
         st.session_state.audio_response_played = False
 
+def chunk_text(text, max_length=200):
+    """Split text into chunks of maximum length while preserving word boundaries."""
+    words = text.split()
+    chunks = []
+    current_chunk = []
+    current_length = 0
+    
+    for word in words:
+        # Add 1 to account for the space between words
+        word_length = len(word) + 1
+        if current_length + word_length > max_length and current_chunk:
+            # Join current chunk and add to chunks
+            chunks.append(' '.join(current_chunk))
+            current_chunk = [word]
+            current_length = word_length
+        else:
+            current_chunk.append(word)
+            current_length += word_length
+    
+    # Add the last chunk if it exists
+    if current_chunk:
+        chunks.append(' '.join(current_chunk))
+    
+    return chunks
+
 def start_conversation():
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
@@ -34,48 +59,38 @@ def synthesize_speech(text):
         # Clean the text
         text = ' '.join(text.replace('*', ' ').replace('−', '-').split())
         
+        # Split text into chunks
+        chunks = chunk_text(text, max_length=200)
+        
         url = "https://waves-api.smallest.ai/api/v1/lightning/get_speech"
         headers = {
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzc5MDI4MGM0NDE1ODdhYjZlODEwM2UiLCJ0eXBlIjoiYXBpS2V5IiwiaWF0IjoxNzM1OTgzNzQ0LCJleHAiOjQ4OTE3NDM3NDR9._Rhof8jciBrL8FBN1rR8-qX8GJOlrKcg9fbMnJxRbXc",
             "Content-Type": "application/json"
         }
         
-        payload = {
-            "text": text,
-            "voice_id": "mithali",
-            "add_wav_header": True,
-            "sample_rate": 16000,
-            "speed": 1
-        }
-        
         try:
-            # Add debug information
-            st.write("Sending request to Waves API...")
-            response = requests.post(url, json=payload, headers=headers)
-            st.write(f"Response status code: {response.status_code}")
-            
-            if response.status_code == 200:
-                # Check if we received audio content
-                content_type = response.headers.get('Content-Type', '')
-                content_length = len(response.content)
-                st.write(f"Received response - Content-Type: {content_type}, Length: {content_length} bytes")
+            for i, chunk in enumerate(chunks):
+                payload = {
+                    "text": chunk,
+                    "voice_id": "mithali",
+                    "add_wav_header": True,
+                    "sample_rate": 16000,
+                    "speed": 1
+                }
                 
-                if content_length > 0:
+                response = requests.post(url, json=payload, headers=headers)
+                if response.status_code == 200:
                     st.audio(response.content, format='audio/wav')
-                    st.session_state.audio_response_played = True
-                    st.write("Audio player created")
+                    # Add a small delay between chunks
+                    if i < len(chunks) - 1:
+                        time.sleep(0.5)
                 else:
-                    st.error("Received empty audio content from API")
-            else:
-                st.error(f"API call failed with status code {response.status_code}")
-                st.write("Error response:", response.text)
-                
+                    st.error(f"Failed to synthesize chunk {i+1}: {response.text}")
+            
+            st.session_state.audio_response_played = True
+            
         except Exception as e:
             st.error(f"Error synthesizing speech: {str(e)}")
-            # Print the full error traceback for debugging
-            import traceback
-            st.write("Full error traceback:")
-            st.code(traceback.format_exc())
 
 def process_audio(audio_bytes):
     if audio_bytes is None:
