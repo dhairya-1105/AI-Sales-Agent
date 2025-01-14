@@ -8,7 +8,7 @@ from create_catalog import retrieve
 
 class SalesAgent:
     def __init__(self, api_key: str):
-        self.llm = Groq(api_key="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", model = "llama-3.3-70b-versatile", temperature = 0)
+        self.llm = Groq(api_key="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", model = "llama-3.3-70b-versatile", temperature = 0)
         self.init_database()
         self.conversation_active = True # For conversation state tracking
         self.waiting_for_name = False
