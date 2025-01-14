@@ -139,7 +139,7 @@ def main():
             icon_name="user",
             icon_size="6x",
             pause_threshold=2.0,
-            sample_rate=41_000
+            sample_rate=16_000
         )
         
         if audio_bytes:
