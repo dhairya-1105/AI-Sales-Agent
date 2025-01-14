@@ -124,25 +124,24 @@ def process_audio(audio_bytes):
     if audio_bytes is None:
         return None
         
-    # Create a temporary WAV file
     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio:
         temp_audio.write(audio_bytes)
         temp_audio_path = temp_audio.name
     
     try:
-        # Initialize recognizer
         r = sr.Recognizer()
+        # Adjust recognition parameters
+        r.energy_threshold = 300  # Lower energy threshold for quieter speech
+        r.dynamic_energy_threshold = True  # Dynamically adjust threshold
+        r.pause_threshold = 0.8  # Shorter pause threshold for more continuous recognition
         
-        # Load the audio file
         with sr.AudioFile(temp_audio_path) as source:
+            # Adjust ambient noise for better recognition
+            r.adjust_for_ambient_noise(source, duration=0.5)
             audio = r.record(source)
-        
-        # Convert speech to text
-        text = r.recognize_google(audio)
-        
-        # Clean up temporary file
+            
+        text = r.recognize_google(audio, language='en-US')
         os.unlink(temp_audio_path)
-        
         return text
     except sr.UnknownValueError:
         os.unlink(temp_audio_path)
@@ -176,8 +175,12 @@ def main():
         with audio_container:
             st.write("Record your response below:")
             audio_bytes = audio_recorder(
-                pause_threshold=2.0,  # Increased pause threshold
-                sample_rate=41000
+                pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
+                auto_start=True
+                sample_rate=16000,
+                recording_color="#e74c3c",  # Red color to make it clear when recording
+                neutral_color="#2ecc71",    # Green color when not recording
+                icon_size="2x"              # Larger icon for better visibility
             )
 
         # Reset audio_response_played when new recording starts
