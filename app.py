@@ -29,6 +29,84 @@ def initialize_session_state():
     if 'first_recording' not in st.session_state:
         st.session_state.first_recording = True
 
+def chunk_text(text, max_length=200):
+    """Split text into chunks based on punctuation and length."""
+    chunks = []
+    current_chunk = []
+    current_length = 0
+    
+    # Split by sentences while preserving punctuation
+    sentences = text.replace('!', '.').replace('?', '?|').replace('.', '.|').split('|')
+    
+    for sentence in sentences:
+        if not sentence.strip():
+            continue
+            
+        sentence = sentence.strip()
+        sentence_length = len(sentence)
+        
+        if current_length + sentence_length <= max_length:
+            current_chunk.append(sentence)
+            current_length += sentence_length
+        else:
+            if current_chunk:
+                chunks.append(' '.join(current_chunk))
+            current_chunk = [sentence]
+            current_length = sentence_length
+    
+    if current_chunk:
+        chunks.append(' '.join(current_chunk))
+    
+    return chunks
+
+def combine_wav_files(wav_contents):
+    """Combine multiple WAV file contents into a single WAV file."""
+    if not wav_contents:
+        return None
+        
+    # Read the first WAV to get parameters
+    with wave.open(io.BytesIO(wav_contents[0]), 'rb') as first_wav:
+        params = first_wav.getparams()
+        
+    # Create output WAV in memory
+    output_buffer = io.BytesIO()
+    with wave.open(output_buffer, 'wb') as output_wav:
+        output_wav.setparams(params)
+        
+        # Write all audio data
+        for content in wav_contents:
+            with wave.open(io.BytesIO(content), 'rb') as w:
+                output_wav.writeframes(w.readframes(w.getnframes()))
+    
+    return output_buffer.getvalue()
+
+def process_audio(audio_bytes):
+    # Add small delay for first recording only
+    if st.session_state.first_recording:
+        time.sleep(1)
+    
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+    try:
+        temp_file.write(audio_bytes)
+        temp_file.close()
+        
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(temp_file.name) as source:
+            audio = recognizer.record(source)
+            
+        text = recognizer.recognize_google(audio)
+        st.session_state.first_recording = False
+        return text
+        
+    except sr.UnknownValueError:
+        st.session_state.first_recording = False
+        return "Sorry, I couldn't understand the audio."
+    except sr.RequestError:
+        st.session_state.first_recording = False
+        return "Sorry, there was an error with the speech recognition service."
+    finally:
+        os.unlink(temp_file.name)
+
 def synthesize_and_play_speech(text, start_recording=True):
     """Synthesize speech and handle recording timing"""
     if not st.session_state.audio_response_played:
@@ -46,11 +124,11 @@ def synthesize_and_play_speech(text, start_recording=True):
             if start_recording:
                 st.session_state.recording_started = True
                 st.session_state.audio_recorder_key += 1
-                # Add extra delay for the first recording
+                # Add extra delay for first recording
                 if st.session_state.first_recording:
-                    time.sleep(3)  # Longer initial delay
+                    time.sleep(3)
                 else:
-                    time.sleep(2)  # Regular delay for subsequent recordings
+                    time.sleep(2)
             
             wav_contents = []
             for i, chunk in enumerate(chunks):
@@ -77,26 +155,11 @@ def synthesize_and_play_speech(text, start_recording=True):
         except Exception as e:
             st.error(f"Error synthesizing speech: {str(e)}")
 
-def process_audio(audio_bytes):
-    # Add delay for first recording
-    if st.session_state.first_recording:
-        time.sleep(1)  # Add a small delay before processing first recording
-    
-    try:
-        # Your existing audio processing code here
-        # ...
-        st.session_state.first_recording = False  # Mark first recording as completed
-        return text
-    except Exception as e:
-        st.session_state.first_recording = False  # Mark as completed even if error occurs
-        return "Sorry, I couldn't understand the audio."
-
 def start_conversation():
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
-    st.session_state.first_recording = True  # Reset first recording flag
+    st.session_state.first_recording = True
     welcome_message = "Hello, my name is Mithali. I'm calling from Sleep Haven Products. Would you be interested in exploring our mattress options?"
-    # Don't start recording for the initial welcome message
     synthesize_and_play_speech(welcome_message, start_recording=False)
     st.session_state.messages.append({"role": "assistant", "content": welcome_message})
     st.session_state.audio_response_played = False
@@ -156,7 +219,6 @@ def main():
                         [f"{msg['role']}: {msg['content']}" for msg in st.session_state.messages[:-1]]
                     )
                     message_placeholder.write(response)
-                    # Start recording before playing the response
                     synthesize_and_play_speech(response, start_recording=True)
 
                 st.session_state.messages.append({"role": "assistant", "content": response})
