@@ -46,6 +46,27 @@ def chunk_text(text, max_length=200):
     
     return chunks
 
+def combine_wav_files(wav_contents):
+    """Combine multiple WAV file contents into a single WAV file."""
+    if not wav_contents:
+        return None
+    
+    # Use the first WAV file to get parameters
+    with wave.open(io.BytesIO(wav_contents[0]), 'rb') as first_wav:
+        params = first_wav.getparams()
+    
+    # Create output WAV in memory
+    output = io.BytesIO()
+    with wave.open(output, 'wb') as output_wav:
+        output_wav.setparams(params)
+        
+        # Write all audio data
+        for wav_content in wav_contents:
+            with wave.open(io.BytesIO(wav_content), 'rb') as w:
+                output_wav.writeframes(w.readframes(w.getnframes()))
+    
+    return output.getvalue()
+
 def start_conversation():
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
@@ -70,6 +91,7 @@ def synthesize_speech(text):
         }
         
         try:
+            wav_contents=[]
             for i, chunk in enumerate(chunks):
                 payload = {
                     "text": chunk,
@@ -81,14 +103,18 @@ def synthesize_speech(text):
                 
                 response = requests.post(url, json=payload, headers=headers)
                 if response.status_code == 200:
-                    st.audio(response.content, format='audio/wav')
-                    # Add a small delay between chunks
-                    if i < len(chunks) - 1:
-                        time.sleep(0.5)
+                    wav_contents.append(response.content)
+                    # # Add a small delay between chunks
+                    # if i < len(chunks) - 1:
+                    #     time.sleep(0.5)
                 else:
                     st.error(f"Failed to synthesize chunk {i+1}: {response.text}")
+                    return
             
-            st.session_state.audio_response_played = True
+            combined_audio = combine_wav_files(wav_contents)
+            if(combined_audio):
+                st.audio(combined_audio, format='audio/wav')
+                st.session_state.audio_response_played = True
             
         except Exception as e:
             st.error(f"Error synthesizing speech: {str(e)}")
