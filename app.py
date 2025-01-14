@@ -130,6 +130,7 @@ def process_audio(audio_bytes):
     
     try:
         r = sr.Recognizer()
+        time.sleep(10)
         # Adjust recognition parameters
         r.energy_threshold = 300  # Lower energy threshold for quieter speech
         r.dynamic_energy_threshold = True  # Dynamically adjust threshold
