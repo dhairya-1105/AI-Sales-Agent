@@ -90,35 +90,32 @@ def main():
     st.title("AI Sales Assistant")
     initialize_session_state()
 
-    # Start button if the conversation hasn't started
+    # Start button for conversation
     if not st.session_state.conversation_started:
         if st.button("Start Conversation"):
             start_conversation()
 
-    # Show chat interface once the conversation has started
+    # Show chat interface once the conversation starts
     if st.session_state.conversation_started:
         # Display chat messages
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.write(message["content"])
 
-        # Audio recording
+        # Ensure audio recorder is always rendered
+        st.write("Record your response below:")
         audio_bytes = audio_recorder()
-        
-        # Debugging: Check if audio recorder is working
-        if not audio_bytes:
-            st.warning("Please record a response.")
-        
+
+        # Handle recorded audio
         if audio_bytes:
             text = process_audio(audio_bytes)
-            
             if text not in [None, "Sorry, I couldn't understand the audio.", "Sorry, there was an error with the speech recognition service."]:
-                # Add user message to chat history
+                # Add user's message to chat history
                 st.session_state.messages.append({"role": "user", "content": text})
-                
                 with st.chat_message("user"):
                     st.write(text)
                 
+                # Generate assistant's response
                 with st.chat_message("assistant"):
                     message_placeholder = st.empty()
                     response = st.session_state.agent.generate_response(
@@ -127,16 +124,19 @@ def main():
                     )
                     message_placeholder.write(response)
                     synthesize_speech(response)
-                
+
                 # Add assistant response to chat history
                 st.session_state.messages.append({"role": "assistant", "content": response})
-                
+
                 # Check if conversation should end
                 if not st.session_state.agent.conversation_active:
                     time.sleep(2)
                     st.session_state.conversation_started = False
             else:
                 st.error(text)
+
+        # Add a small delay to prevent unnecessary reruns
+        time.sleep(0.1)
 
 if __name__ == "__main__":
     main()
