@@ -21,7 +21,7 @@ def initialize_session_state():
     if 'audio_response_played' not in st.session_state:
         st.session_state.audio_response_played = False
 
-def chunk_text(text, max_length=500):
+def chunk_text(text, max_length=200):
     """Split text into chunks of maximum length while preserving word boundaries."""
     words = text.split()
     chunks = []
@@ -61,7 +61,7 @@ def synthesize_speech(text):
         text = ' '.join(text.replace('*', ' ').replace('−', '-').split())
         
         # Split text into chunks
-        chunks = chunk_text(text, max_length=500)
+        chunks = chunk_text(text, max_length=350)
         
         url = "https://waves-api.smallest.ai/api/v1/lightning/get_speech"
         headers = {
