@@ -188,6 +188,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-new groq key : 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
