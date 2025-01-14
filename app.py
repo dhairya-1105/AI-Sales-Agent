@@ -73,7 +73,7 @@ def synthesize_speech(text):
         
         url = "https://waves-api.smallest.ai/api/v1/lightning/get_speech"
         headers = {
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzc5MDI4MGM0NDE1ODdhYjZlODEwM2UiLCJ0eXBlIjoiYXBpS2V5IiwiaWF0IjoxNzM1OTgzNzQ0LCJleHAiOjQ4OTE3NDM3NDR9._Rhof8jciBrL8FBN1rR8-qX8GJOlrKcg9fbMnJxRbXc",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Nzg1ZmNmNjQzNjMwNGZhZDUwODYwMjEiLCJ0eXBlIjoiYXBpS2V5IiwiaWF0IjoxNzM2ODM0Mjk0LCJleHAiOjQ4OTI1OTQyOTR9.iAA8qwiqaN8I1OJyJB0zN4sTlXZuowVqpIuu-Takfe4",
             "Content-Type": "application/json"
         }
         
