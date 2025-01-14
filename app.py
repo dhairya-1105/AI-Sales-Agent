@@ -21,8 +21,7 @@ def initialize_session_state():
         st.session_state.messages = []
     if 'audio_response_played' not in st.session_state:
         st.session_state.audio_response_played = False
-    if 'flag' not in st.session_state:
-        st.session_state.flag = 0
+
 def chunk_text(text, max_length=200):
     """Split text into chunks of maximum length while preserving word boundaries."""
     words = text.split()
@@ -162,7 +161,6 @@ def main():
     if not st.session_state.conversation_started:
         if st.button("Start Conversation"):
             start_conversation()
-            st.session_state.flag = 1
 
     # Show chat interface once the conversation starts
     if st.session_state.conversation_started:
@@ -171,35 +169,19 @@ def main():
             with st.chat_message(message["role"]):
                 st.write(message["content"])
 
-        if st.session_state.flag ==0:
-            audio_container = st.container()
-            
-            with audio_container:
-                st.write("Record your response below:")
-                audio_bytes = audio_recorder(
-                    pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
-                    auto_start=True,
-                    sample_rate=16000,
-                    recording_color="#e74c3c",  # Red color to make it clear when recording
-                    neutral_color="#2ecc71",    # Green color when not recording
-                    icon_size="2x"              # Larger icon for better visibility
-                )
-        else:
-            audio_container = st.container()
-            
-            with audio_container:
-                st.write("Record your response below:")
-                audio_bytes = audio_recorder(
-                    pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
-                    sample_rate=16000,
-                    recording_color="#e74c3c",  # Red color to make it clear when recording
-                    neutral_color="#2ecc71",    # Green color when not recording
-                    icon_size="2x"              # Larger icon for better visibility
-                )
-                st.session_state.flag = 0
-                
-            
-            
+        # Create a container for the audio recorder
+        audio_container = st.container()
+        
+        with audio_container:
+            st.write("Record your response below:")
+            audio_bytes = audio_recorder(
+                pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
+                # auto_start=True,
+                sample_rate=16000,
+                recording_color="#e74c3c",  # Red color to make it clear when recording
+                neutral_color="#2ecc71",    # Green color when not recording
+                icon_size="2x"              # Larger icon for better visibility
+            )
 
         # Reset audio_response_played when new recording starts
         if audio_bytes:
@@ -232,7 +214,7 @@ def main():
                     time.sleep(2)
                     st.session_state.conversation_started = False
             else:
-                st.error(text)
+                st.error("Try speaking again, with the mic closer to your mouth.")
 
 if __name__ == "__main__":
     main()
