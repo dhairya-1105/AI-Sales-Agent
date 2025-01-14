@@ -6,7 +6,6 @@ import time
 from sales_agent import SalesAgent
 import os
 from audio_recorder_streamlit import audio_recorder
-import io
 import base64
 
 def initialize_session_state():
@@ -18,27 +17,18 @@ def initialize_session_state():
         st.session_state.conversation_history = []
     if 'messages' not in st.session_state:
         st.session_state.messages = []
-    if 'audio_counter' not in st.session_state:
-        st.session_state.audio_counter = 0
 
-def autoplay_audio(audio_bytes):
-    # Increment counter to create unique audio element IDs
-    st.session_state.audio_counter += 1
-    audio_id = f"audio_{st.session_state.audio_counter}"
+def autoplay_audio(audio_content):
+    # Convert audio bytes to base64
+    b64 = base64.b64encode(audio_content).decode()
     
-    # Encode audio bytes to base64
-    b64 = base64.b64encode(audio_bytes).decode()
-    
-    # Create HTML with audio element and autoplay script
-    html = f"""
-        <audio id="{audio_id}" autoplay>
+    # Create player with autoplay
+    md = f"""
+        <audio autoplay>
             <source src="data:audio/wav;base64,{b64}" type="audio/wav">
         </audio>
-        <script>
-            document.getElementById("{audio_id}").play();
-        </script>
-        """
-    st.components.v1.html(html, height=0)
+    """
+    st.markdown(md, unsafe_allow_html=True)
 
 def start_conversation():
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
@@ -69,6 +59,7 @@ def convert_audio_to_text(audio_bytes):
         return "Sorry, there was an error with the speech recognition service."
 
 def play_text_as_speech(text):
+    # Clean and chunk the text
     def clean_text(text):
         text = text.replace('*', ' ').replace('−', '-')
         return ' '.join(text.split())
@@ -120,14 +111,13 @@ def play_text_as_speech(text):
                 print(f"Error response: {response.text}")
                 continue
             
-            # Auto-play the audio chunk
+            # Play audio using HTML audio element with autoplay
             autoplay_audio(response.content)
             
-            # Wait for audio to finish before playing next chunk
-            # Assuming average speaking rate of 150 words per minute
-            words_in_chunk = len(chunk.split())
-            estimated_duration = (words_in_chunk / 150) * 60  # in seconds
-            time.sleep(estimated_duration)
+            # Wait for approximate duration of speech
+            words = len(chunk.split())
+            duration = (words / 2.5)  # Approximate speaking time in seconds
+            time.sleep(duration)
             
         except Exception as e:
             print(f"Error processing chunk: {chunk}")
