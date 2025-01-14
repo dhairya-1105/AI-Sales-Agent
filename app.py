@@ -26,6 +26,8 @@ def initialize_session_state():
         st.session_state.recording_started = False
     if 'audio_recorder_key' not in st.session_state:
         st.session_state.audio_recorder_key = 0
+    if 'first_recording' not in st.session_state:
+        st.session_state.first_recording = True
 
 def synthesize_and_play_speech(text, start_recording=True):
     """Synthesize speech and handle recording timing"""
@@ -44,7 +46,11 @@ def synthesize_and_play_speech(text, start_recording=True):
             if start_recording:
                 st.session_state.recording_started = True
                 st.session_state.audio_recorder_key += 1
-                time.sleep(2)  # Wait 2 seconds before playing response
+                # Add extra delay for the first recording
+                if st.session_state.first_recording:
+                    time.sleep(3)  # Longer initial delay
+                else:
+                    time.sleep(2)  # Regular delay for subsequent recordings
             
             wav_contents = []
             for i, chunk in enumerate(chunks):
@@ -71,9 +77,24 @@ def synthesize_and_play_speech(text, start_recording=True):
         except Exception as e:
             st.error(f"Error synthesizing speech: {str(e)}")
 
+def process_audio(audio_bytes):
+    # Add delay for first recording
+    if st.session_state.first_recording:
+        time.sleep(1)  # Add a small delay before processing first recording
+    
+    try:
+        # Your existing audio processing code here
+        # ...
+        st.session_state.first_recording = False  # Mark first recording as completed
+        return text
+    except Exception as e:
+        st.session_state.first_recording = False  # Mark as completed even if error occurs
+        return "Sorry, I couldn't understand the audio."
+
 def start_conversation():
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
+    st.session_state.first_recording = True  # Reset first recording flag
     welcome_message = "Hello, my name is Mithali. I'm calling from Sleep Haven Products. Would you be interested in exploring our mattress options?"
     # Don't start recording for the initial welcome message
     synthesize_and_play_speech(welcome_message, start_recording=False)
