@@ -89,31 +89,34 @@ def process_audio(audio_bytes):
 def main():
     st.title("AI Sales Assistant")
     initialize_session_state()
-    
-    # Add a start button if conversation hasn't started
+
+    # Start button if the conversation hasn't started
     if not st.session_state.conversation_started:
         if st.button("Start Conversation"):
             start_conversation()
-            st.rerun()
-    
-    # Show chat interface once conversation has started
+
+    # Show chat interface once the conversation has started
     if st.session_state.conversation_started:
         # Display chat messages
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.write(message["content"])
-        
-        # Audio recording using streamlit-audio-recorder
+
+        # Audio recording
         audio_bytes = audio_recorder()
+        
+        # Debugging: Check if audio recorder is working
+        if not audio_bytes:
+            st.warning("Please record a response.")
         
         if audio_bytes:
             text = process_audio(audio_bytes)
             
-            if text and text != "Sorry, I couldn't understand the audio." and text != "Sorry, there was an error with the speech recognition service.":
+            if text not in [None, "Sorry, I couldn't understand the audio.", "Sorry, there was an error with the speech recognition service."]:
                 # Add user message to chat history
                 st.session_state.messages.append({"role": "user", "content": text})
                 
-                with st.chat_message("user"): 
+                with st.chat_message("user"):
                     st.write(text)
                 
                 with st.chat_message("assistant"):
@@ -134,8 +137,6 @@ def main():
                     st.session_state.conversation_started = False
             else:
                 st.error(text)
-            
-            st.rerun()
 
 if __name__ == "__main__":
     main()
