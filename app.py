@@ -176,7 +176,7 @@ def main():
             st.write("Record your response below:")
             audio_bytes = audio_recorder(
                 pause_threshold=3.0,  # Increased from 2.0 to 4.0 seconds
-                auto_start=True
+                auto_start=True,
                 sample_rate=16000,
                 recording_color="#e74c3c",  # Red color to make it clear when recording
                 neutral_color="#2ecc71",    # Green color when not recording
