@@ -69,14 +69,12 @@ def combine_wav_files(wav_contents):
     return output.getvalue()
 
 def start_conversation():
-    st.write("started")
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
     welcome_message = "Hello, my name is Mithali. I'm calling from Sleep Haven Products. Would you be interested in exploring our mattress options?"
     synthesize_speech(welcome_message)
     st.session_state.messages.append({"role": "assistant", "content": welcome_message})
     st.session_state.audio_response_played = False
-    st.write("ended")
 
 def synthesize_speech(text):
     # Only synthesize if not already played
@@ -123,33 +121,30 @@ def synthesize_speech(text):
             st.error(f"Error synthesizing speech: {str(e)}")
 
 def process_audio(audio_bytes):
-    if audio_bytes is None:
-        return None
-        
+    if audio_bytes is None or len(audio_bytes) == 0:
+        return "No audio recorded. Please try again."
+
     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio:
         temp_audio.write(audio_bytes)
         temp_audio_path = temp_audio.name
-        st.write("temp file ban gyi")
-    
+
     try:
-        st.write("try me aagya")
         r = sr.Recognizer()
-        # Adjust recognition parameters
-        r.energy_threshold = 300  # Lower energy threshold for quieter speech
-        r.dynamic_energy_threshold = True  # Dynamically adjust threshold
-        r.pause_threshold = 0.8  # Shorter pause threshold for more continuous recognition
-        
-        with sr.AudioFile(temp_audio_path) as source:
-            # Adjust ambient noise for better recognition
-            st.write("recording shuru hogyi")
-            r.adjust_for_ambient_noise(source, duration=0.5)
-            audio = r.record(source)
-            st.write("audio record hogya")
-            
-            
-        text = r.recognize_google(audio, language='en-IN')
-        os.unlink(temp_audio_path)
-        return text
+        r.energy_threshold = 300  # Adjust as needed
+        r.dynamic_energy_threshold = True
+        r.pause_threshold = 0.8
+
+        if os.path.exists(temp_audio_path) and os.path.getsize(temp_audio_path) > 0:
+            with sr.AudioFile(temp_audio_path) as source:
+                r.adjust_for_ambient_noise(source, duration=1.0)  # Increased duration
+                audio = r.record(source)
+
+            text = r.recognize_google(audio, language='en-IN')
+            os.unlink(temp_audio_path)
+            return text
+        else:
+            os.unlink(temp_audio_path)
+            return "Audio file is invalid. Please try recording again."
     except sr.UnknownValueError:
         os.unlink(temp_audio_path)
         return "Sorry, I couldn't understand the audio."
@@ -163,13 +158,11 @@ def process_audio(audio_bytes):
 def main():
     st.title("AI Sales Assistant")
     initialize_session_state()
-    audio_container = st.container()
 
     # Start button for conversation
     if not st.session_state.conversation_started:
         if st.button("Start Conversation"):
             start_conversation()
-            print("start se bahar aagya")
 
     # Show chat interface once the conversation starts
     if st.session_state.conversation_started:
@@ -178,7 +171,9 @@ def main():
             with st.chat_message(message["role"]):
                 st.write(message["content"])
 
-        # Create a container for the audio recorder        
+        # Create a container for the audio recorder
+        audio_container = st.container()
+        
         with audio_container:
             st.write("Record your response below:")
             audio_bytes = audio_recorder(
