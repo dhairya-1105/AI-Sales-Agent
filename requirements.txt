@@ -7,3 +7,4 @@ SpeechRecognition
 faiss-cpu
 llama-index-embeddings-jinaai
 audio-recorder-streamlit
+pyaudio
