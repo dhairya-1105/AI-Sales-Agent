@@ -121,30 +121,28 @@ def synthesize_speech(text):
             st.error(f"Error synthesizing speech: {str(e)}")
 
 def process_audio(audio_bytes):
-    if audio_bytes is None or len(audio_bytes) == 0:
-        return "No audio recorded. Please try again."
-
+    if audio_bytes is None:
+        return None
+        
     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio:
         temp_audio.write(audio_bytes)
         temp_audio_path = temp_audio.name
-
+    
     try:
         r = sr.Recognizer()
-        r.energy_threshold = 300  # Adjust as needed
-        r.dynamic_energy_threshold = True
-        r.pause_threshold = 0.8
-
-        if os.path.exists(temp_audio_path) and os.path.getsize(temp_audio_path) > 0:
-            with sr.AudioFile(temp_audio_path) as source:
-                r.adjust_for_ambient_noise(source, duration=1.0)  # Increased duration
-                audio = r.record(source)
-
-            text = r.recognize_google(audio, language='en-IN')
-            os.unlink(temp_audio_path)
-            return text
-        else:
-            os.unlink(temp_audio_path)
-            return "Audio file is invalid. Please try recording again."
+        # Adjust recognition parameters
+        r.energy_threshold = 300  # Lower energy threshold for quieter speech
+        r.dynamic_energy_threshold = True  # Dynamically adjust threshold
+        r.pause_threshold = 0.8  # Shorter pause threshold for more continuous recognition
+        
+        with sr.AudioFile(temp_audio_path) as source:
+            # Adjust ambient noise for better recognition
+            r.adjust_for_ambient_noise(source, duration=0.5)
+            audio = r.record(source)
+            
+        text = r.recognize_google(audio, language='en-IN')
+        os.unlink(temp_audio_path)
+        return text
     except sr.UnknownValueError:
         os.unlink(temp_audio_path)
         return "Sorry, I couldn't understand the audio."
