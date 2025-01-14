@@ -69,14 +69,14 @@ def combine_wav_files(wav_contents):
     return output.getvalue()
 
 def start_conversation():
-    print("started")
+    st.write("started")
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
     welcome_message = "Hello, my name is Mithali. I'm calling from Sleep Haven Products. Would you be interested in exploring our mattress options?"
     synthesize_speech(welcome_message)
     st.session_state.messages.append({"role": "assistant", "content": welcome_message})
     st.session_state.audio_response_played = False
-    print("ended")
+    st.write("ended")
 
 def synthesize_speech(text):
     # Only synthesize if not already played
@@ -129,9 +129,10 @@ def process_audio(audio_bytes):
     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_audio:
         temp_audio.write(audio_bytes)
         temp_audio_path = temp_audio.name
-        print("temp file ban gyi")
+        st.write("temp file ban gyi")
     
     try:
+        st.write("try me aagya")
         r = sr.Recognizer()
         # Adjust recognition parameters
         r.energy_threshold = 300  # Lower energy threshold for quieter speech
