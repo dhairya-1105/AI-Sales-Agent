@@ -141,8 +141,11 @@ def process_audio(audio_bytes):
         
         with sr.AudioFile(temp_audio_path) as source:
             # Adjust ambient noise for better recognition
+            st.write("recording shuru hogyi")
             r.adjust_for_ambient_noise(source, duration=0.5)
             audio = r.record(source)
+            st.write("audio record hogya")
+            
             
         text = r.recognize_google(audio, language='en-IN')
         os.unlink(temp_audio_path)
