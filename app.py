@@ -71,7 +71,7 @@ def combine_wav_files(wav_contents):
 def start_conversation():
     st.session_state.agent = SalesAgent(api_key="your-groq-api-key")
     st.session_state.conversation_started = True
-    welcome_message = "Hello, my name is Mithali. I'm calling from Sleep Haven Products. Would you be interested in exploring our mattress options?"
+    welcome_message = "Hello, my name is Mithali. I'm calling from SleepWell Mattresses. Would you be interested in exploring our mattress options?"
     synthesize_speech(welcome_message)
     st.session_state.messages.append({"role": "assistant", "content": welcome_message})
     st.session_state.audio_response_played = False
