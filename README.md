@@ -60,6 +60,7 @@ Feel free to reach out to us to share your use cases or feedback!
 ---
   
 Access our Streamlit Cloud demo [here](https://ai-sales-agent-644hxadbndzatju8g27dbz.streamlit.app/)
+*NOTE* : The speech-to-text API requires some warm-up time, so users are requested to wait a couple of seconds before clicking the mic button and give another second of pause after clicking the mic button to avoid problems with the STT.
 
 Watch local demo [here](https://youtu.be/rwCstwRoIVQ)
 
