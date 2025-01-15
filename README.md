@@ -7,7 +7,7 @@ Feel free to reach out to us to share your use cases or feedback!
 
 ---
 
-## Features
+## Feature
 
 ### 🚀 Key Capabilities
 - *Context-Aware Conversations*:  
