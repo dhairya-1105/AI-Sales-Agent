@@ -192,7 +192,7 @@ class SalesAgent:
 ### Example Workflow
 
 Assistant:
-Hello, my name is Mithali. I'm calling from Sleep Haven Products. Would you be interested exploring our mattress options?
+Hello, my name is Mithali. I'm calling from SleepWell Mattresses. Would you be interested exploring our mattress options?
 
 User:
 I'm looking for a comfortable mattress for back pain. My budget is around $500.
