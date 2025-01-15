@@ -54,6 +54,8 @@ Our vision is to create a *capable open-source AI Sales Agent* that helps busine
   
 Access our Streamlit Cloud demo [here](https://ai-sales-agent-644hxadbndzatju8g27dbz.streamlit.app/)
 
+Watch local demo [here](https://youtu.be/rwCstwRoIVQ)
+
 ---
 ## Chat Example
 ```
