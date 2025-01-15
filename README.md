@@ -1,56 +1,63 @@
-# ⭐AI Sales Agent
+# ⭐ AI Sales Agent
 
-Our AI Sales Agent is an innovative, context-aware agent designed to streamline customer interactions across text and voice channels.
-Our vision is to create a *capable open-source AI Sales Agent* that helps businesses improve sales processes, enhance customer experiences, and minimize operational costs. Feel free to reach out to us to share your use cases or feedback!
+Our *AI Sales Agent* is an innovative, context-aware agent designed to streamline customer interactions across text and voice channels.  
+Our vision is to create a capable, open-source AI Sales Agent that helps businesses improve sales processes, enhance customer experiences, and minimize operational costs.  
+
+Feel free to reach out to us to share your use cases or feedback!
 
 ---
 
 ## Features
 
 ### 🚀 Key Capabilities
-- *Context-Aware Conversations*: 
-  Our agent understands and adjusts its responses based on the stage of the sales conversation, such as introduction, needs analysis, solution presentation, objection handling, and closing.
+- *Context-Aware Conversations*:  
+  Understands and adjusts responses based on the sales stage (e.g., introduction, needs analysis, solution presentation, objection handling, and closing).
 
 - *Tool Integration*:
-  - **Search Product Tool**: A RAG (Retrieval-Augmented Generation) system that fetches relevant product information based on user queries.
-  - **Create Order Tool**: Captures order details, saves them in an SQLite database, and generates a unique order ID.
-  - **End Tool**: Provides a friendly farewell message and gracefully ends the conversation.
+  - Search Product Tool: Uses RAG (Retrieval-Augmented Generation) to fetch relevant product information based on user queries.
+  - Create Order Tool: Captures order details, stores them in an SQLite database, and generates a unique order ID.
+  - End Tool: Provides a friendly farewell message and gracefully ends the conversation.
 
 - *Voice & Text Integration*:
   - Voice input using speech_recognition.
   - Text-to-speech output using the Smallest AI API.
-  - Hosted as a web application via Streamlit Cloud.
+  - Hosted as a web application via *Streamlit Cloud*.
 
-- *Automated Sales Support*:
-  Capable of handling real-time customer queries, providing tailored recommendations, and closing sales autonomously.
+- *Automated Sales Support*:  
+  Handles real-time customer queries, provides tailored recommendations, and autonomously closes sales.
 
-### 🛠️ Advanced Functionalities
-- *Data-Driven Recommendations*:
-  References a pre-defined product knowledge base, reducing hallucinations and ensuring accuracy.
-  
-- *Real-Time Order Processing*:
-  Manages customer orders, stores product information, and generates order confirmations with unique IDs.
+### 🛠 Advanced Functionalities
+- *Data-Driven Recommendations*:  
+  Uses a pre-defined product knowledge base to ensure accuracy and reduce hallucinations.
 
-- *Rapid Pipeline Response*:
-  Optimized for voice conversations with a <2s response time for speech-to-text, LLM inference, and text-to-speech.
+- *Real-Time Order Processing*:  
+  Manages customer orders, stores product details, and generates unique order confirmations.
+
+- *Rapid Pipeline Response*:  
+  Optimized for voice conversations with a response time of under 2 seconds (speech-to-text, LLM inference, and text-to-speech).
 
 ---
 
 ## Architecture
 
-1. *AI Engine*:
-   - Built using LlamaIndex's Groq LLM, specifically llama-3.3-70b-versatile, the agent contextual and conversational intelligence.
-   - Supports synchronous and asynchronous operations with low latency.
+1. *AI Engine*:  
+   Built with *LlamaIndex's Groq LLM (llama-3.3-70b-versatile)* for contextual and conversational intelligence.  
+   Supports synchronous and asynchronous operations with low latency.
 
-2. *Product Catalog Retrieval*:
-   - Implements FAISS-based nearest neighbor searches.
-   - Maps product embeddings to the original catalog for efficient querying.
+2. *Product Catalog Retrieval*:  
+   Implements FAISS-based nearest neighbor searches, mapping product embeddings to the catalog for efficient querying.
 
-3. *Order Management*:
-   - Integrates SQLite for managing order data with fields like order ID, customer name, product details, and timestamps.
+3. *Order Management*:  
+   Integrates SQLite to manage order data with fields like:
+   - Order ID
+   - Customer Name
+   - Product Details
+   - Timestamp
 
-4. *Web Interface*:
-   - Hosted on Streamlit for easy accessibility and intuitive interaction.
+4. *Web Interface*:  
+   Hosted on *Streamlit* for easy accessibility and user-friendly interaction.
+
+---
   
 Access our Streamlit Cloud demo [here](https://ai-sales-agent-644hxadbndzatju8g27dbz.streamlit.app/)
 
